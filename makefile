@@ -24,7 +24,7 @@ NAMESPACE       := sales-system
 APP             := sales
 BASE_IMAGE_NAME := zaouldyeck/service
 SERVICE_NAME    := sales-api
-VERSION         := "0.0.1-$(shell git rev-parse --short HEAD)"
+VERSION         := 0.0.1
 SERVICE_IMAGE   := $(BASE_IMAGE_NAME)/$(SERVICE_NAME):$(VERSION)
 METRICS_IMAGE   := $(BASE_IMAGE_NAME)/$(SERVICE_NAME)-metrics:$(VERSION)
 
@@ -63,12 +63,18 @@ dev-down:
 #----------------------------------------
 
 dev-load:
-	cd zarf/k8s/dev/sales; kustomize edit set image service-image=$(SERVICE-IMAGE)
 	kind load docker-image $(SERVICE_IMAGE) --name $(KIND_CLUSTER)
 
 dev-apply:
 	kustomize build zarf/k8s/dev/sales | kubectl apply -f -
 	kubectl wait pods --namespace=$(NAMESPACE) --selector app=$(APP) --timeout=120s --for=condition=Ready
+
+dev-restart:
+	kubectl rollout restart deployment $(APP) --namespace=$(NAMESPACE)
+
+dev-update: all dev-load dev-restart
+
+dev-update-apply: all dev-load dev-apply
 
 #----------------------------------------
 

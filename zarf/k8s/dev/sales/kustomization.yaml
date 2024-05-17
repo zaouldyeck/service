@@ -7,4 +7,4 @@ patches:
 images:
   - name: service-image
     newName: zaouldyeck/service/sales-api
-    newTag: 0.0.1-57a4cf5
+    newTag: 0.0.1
