@@ -19,16 +19,32 @@ TEMPO           := grafana/tempo:2.2.0
 LOKI            := grafana/loki:2.9.0
 PROMTAIL        := grafana/promtail:2.9.0
 
-KIND_CLUSTER    := ardan-starter-cluster
+KIND_CLUSTER    := zaouldyeck-starter-cluster
 NAMESPACE       := sales-system
 APP             := sales
-BASE_IMAGE_NAME := ardanlabs/service
+BASE_IMAGE_NAME := zaouldyeck/service
 SERVICE_NAME    := sales-api
-VERSION         := 0.0.1
+VERSION         := "0.0.1-$(shell git rev-parse --short HEAD)"
 SERVICE_IMAGE   := $(BASE_IMAGE_NAME)/$(SERVICE_NAME):$(VERSION)
 METRICS_IMAGE   := $(BASE_IMAGE_NAME)/$(SERVICE_NAME)-metrics:$(VERSION)
 
 # VERSION       := "0.0.1-$(shell git rev-parse --short HEAD)"
+
+# =======================================================================
+# Building containers
+
+all: service
+
+service:
+	docker build \
+    		-f zarf/docker/dockerfile.service \
+    		-t $(SERVICE_IMAGE) \
+    		--build-arg BUILD_REF=$(VERSION) \
+    		--build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+    		.
+
+# =======================================================================
+
 
 # Run from within k8s kind
 # -----------------------------
