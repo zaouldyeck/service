@@ -2,6 +2,8 @@
 SHELL_PATH = /bin/ash
 SHELL = $(if $(wildcard $(SHELL_PATH)),/bin/ash,/bin/bash)
 
+.DEFAULT_GOAL := run
+
 run:
 	go run app/services/sales-api/main.go | go run app/tooling/logfmt/main.go
 run-help:
