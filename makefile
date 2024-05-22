@@ -99,7 +99,13 @@ dev-status:
 	kubectl get svc -o wide
 	kubectl get pods -o wide --watch --all-namespaces
 
-#====================================================================
+# ====================================================================
+# Metrics and tracing
+
+metrics-view-sc:
+	expvarmon -ports="localhost:4000" -vars="build,requests,goroutines,errors,panics,mem:memstats.Alloc"
+
+# ====================================================================
 # Modules support
 
 tidy:
